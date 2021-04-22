@@ -95,7 +95,7 @@ namespace test00
                 {
                     if (dataGridView1[0, i].Value == null || dataGridView1[1, i].Value == null || dataGridView1[2, i].Value == null)
                     {
-                        Console.WriteLine("a");
+                        
                         MessageBox.Show("Please input Valid Data Values");
                         return;
                     }
@@ -105,7 +105,7 @@ namespace test00
                 {
                     if (dataGridView1[0, i].Value == null || dataGridView1[1, i].Value == null || dataGridView1[2, i].Value == null || dataGridView1[3, i].Value == null)
                     {
-                        Console.WriteLine("b");
+                        
                         MessageBox.Show("Please input Valid Data Values");
                         return;
                     }
