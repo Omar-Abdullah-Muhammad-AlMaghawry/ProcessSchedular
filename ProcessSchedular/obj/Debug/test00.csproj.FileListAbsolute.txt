@@ -7,3 +7,13 @@ D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\test00\test
 D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\test00\test00\obj\Debug\test00.csproj.GenerateResource.Cache
 D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\test00\test00\obj\Debug\test00.exe
 D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\test00\test00\obj\Debug\test00.pdb
+D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\AssiProcessSchedular\ProcessSchedular\bin\Debug\test00.exe.config
+D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\AssiProcessSchedular\ProcessSchedular\obj\Debug\test00.exe
+D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\AssiProcessSchedular\ProcessSchedular\obj\Debug\test00.pdb
+D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\AssiProcessSchedular\ProcessSchedular\bin\Debug\test00.exe
+D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\AssiProcessSchedular\ProcessSchedular\bin\Debug\test00.pdb
+D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\AssiProcessSchedular\ProcessSchedular\obj\Debug\test00.Form1.resources
+D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\AssiProcessSchedular\ProcessSchedular\obj\Debug\test00.Properties.Resources.resources
+D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\AssiProcessSchedular\ProcessSchedular\obj\Debug\test00.csproj.GenerateResource.Cache
+D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\AssiProcessSchedular\ProcessSchedular\obj\Debug\test00.csprojAssemblyReference.cache
+D:\College\3rd Comp. and Sys\2nd Terms\Operating Systems\Assignments\AssiProcessSchedular\ProcessSchedular\obj\Debug\test00.csproj.CoreCompileInputs.cache
