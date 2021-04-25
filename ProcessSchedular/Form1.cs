@@ -18,16 +18,13 @@ namespace test00
     {
 
 
-        private static List<processes> processes = new List<processes>();
-        internal static List<processes> Processes { get => processes; set => processes = value; }
+        
         public Form1()
         {
             InitializeComponent();
         }
 
         private DataTable process;
-
-        
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -136,22 +133,16 @@ namespace test00
             var graphics = e.Graphics;
             int count = dataGridView1.Rows.Count;
             int sum = 0;
-
+            double totalWaiting = 0;
             dataGridView1.Sort(new NaturalSortComparer());
             for (int i = 0; i < count; i++)
             {
-                
+ 
                 graphics.FillRectangle(new SolidBrush(Color.LightGray), new Rectangle((width * i) + 5, (panel1.Height / 3), width, height));
                 graphics.DrawRectangle(new Pen(Color.Gray), new Rectangle((width * i) + 5, (panel1.Height / 3), width, height));
                 if (comboBox1.Text == "FCFS")
                 {
-                   
-                    graphics.DrawString($"{ dataGridView1[0, i].Value.ToString().ToUpper()}", new Font(FontFamily.GenericSansSerif, 13), new SolidBrush(Color.Black), new Point((width * i) + 15, (panel1.Height / 3) + 5));
-                    int runTime = (int.Parse(dataGridView1[1, i].Value.ToString()) > sum) ? int.Parse(dataGridView1[1, i].Value.ToString()) : sum;
-                    sum += int.Parse(dataGridView1[2, i].Value.ToString()) + ((int.Parse(dataGridView1[1, i].Value.ToString()) < sum) ?0:(int.Parse(dataGridView1[1, i].Value.ToString())- sum));
-                    Console.WriteLine(sum);
-                    graphics.DrawString($"{runTime}", new Font(FontFamily.GenericSerif, 8), new SolidBrush(Color.White), new Point((width * i) +5, (panel1.Height / 3) + height));
-                    graphics.DrawString($"{sum}", new Font(FontFamily.GenericSerif, 8), new SolidBrush(Color.Black), new Point((width * i) + width -10, (panel1.Height / 3) + height));
+                    FCFS(width, height, graphics, ref sum, ref totalWaiting, i);
 
                 }
                 else
@@ -161,7 +152,24 @@ namespace test00
                     graphics.DrawString($"{ dataGridView1[1, i].Value.ToString()}", new Font(FontFamily.GenericSerif, 8), new SolidBrush(Color.White), new Point((width * i) + 5, (panel1.Height / 3) + height));*/
                 }
             }
+            if(totalWaiting > 0)
+            {
+                totalWaiting /= count;
+                textBox5.Text = totalWaiting.ToString();
+            }
+            
 
+        }
+
+        private void FCFS(int width, int height, Graphics graphics, ref int sum, ref double totalWaiting, int i)
+        {
+            graphics.DrawString($"{ dataGridView1[0, i].Value.ToString().ToUpper()}", new Font(FontFamily.GenericSansSerif, 13), new SolidBrush(Color.Black), new Point((width * i) + 15, (panel1.Height / 3) + 5));
+            int runTime = (int.Parse(dataGridView1[1, i].Value.ToString()) > sum) ? int.Parse(dataGridView1[1, i].Value.ToString()) : sum;
+            sum += int.Parse(dataGridView1[2, i].Value.ToString()) + ((int.Parse(dataGridView1[1, i].Value.ToString()) < sum) ? 0 : (int.Parse(dataGridView1[1, i].Value.ToString()) - sum));
+            Console.WriteLine(sum);
+            totalWaiting += runTime - int.Parse(dataGridView1[1, i].Value.ToString());
+            graphics.DrawString($"{runTime}", new Font(FontFamily.GenericSerif, 8), new SolidBrush(Color.White), new Point((width * i) + 5, (panel1.Height / 3) + height));
+            graphics.DrawString($"{sum}", new Font(FontFamily.GenericSerif, 8), new SolidBrush(Color.Black), new Point((width * i) + width - 10, (panel1.Height / 3) + height));
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

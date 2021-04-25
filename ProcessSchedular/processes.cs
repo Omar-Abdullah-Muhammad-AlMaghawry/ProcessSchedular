@@ -9,16 +9,6 @@ namespace test00
     public class processes
     {
         
-        public int id;
-        public int arrivaltime;
-        
-       
-        public processes(int id, int arrivaltime)
-        {
-            this.id = id;
-            this.arrivaltime = arrivaltime;
-           
-        }
         
         
     }
