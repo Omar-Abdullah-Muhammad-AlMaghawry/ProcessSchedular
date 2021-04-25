@@ -16,6 +16,9 @@ namespace test00
         Graphics pObject = null;
         static  Brush blue = new SolidBrush(Color.Blue);
         static Pen bluePen = new Pen(blue, 4);
+        static Brush black = new SolidBrush(Color.Black);
+        static Pen blackPen = new Pen(black, 3);
+        // Font font = new Font(Font.FontFamily, 4);
         static float startX = 0 , startY =0;
         static float height = 0 ;
         float inc = 0;
@@ -25,8 +28,8 @@ namespace test00
         public Form1()
         {
             InitializeComponent();
-            startX = 15;
-            startY = 15;
+            startX = 14;
+            startY = 14;
             height = 25;
         }
 
@@ -149,7 +152,7 @@ namespace test00
                     // TO DO .. Show the minRow 
                     width = float.Parse((string)minRow[2])*4;
                     dataGridView2_Paint(sender, e);
-                   dataGridView2.Update();
+                    dataGridView2.Update();
                     burstTimeSum += float.Parse((string)minRow[2]);
                     int delIndex = int.Parse(minRow[4]);
                     arrDataOr.RemoveAt(delIndex);
@@ -201,14 +204,22 @@ namespace test00
 
 
         }
-        
+
         private void drawRect(float w)
         {
-            
-           pObject.DrawRectangle(bluePen, startX + inc, startY, w, height);
+            Font font = new Font(Font.FontFamily, 6);
+            pObject.DrawRectangle(blackPen, startX + inc, startY, w, height);
+            pObject.FillRectangle(blue, startX + inc, startY, w, height);
+           // if (inc != 0)
+                pObject.DrawString((inc/4).ToString(), font, black, startX + inc-3 , startY + (float)26);
             inc += w;
-        }
+            if (inc != 0)
+            {
+               
+                pObject.DrawString((inc / 4).ToString(),font, black, startX + inc-3, startY + (float)26);
 
+            }
+        }
         
       
         private void dataGridView2_Paint(object sender, PaintEventArgs e)
