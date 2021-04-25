@@ -1,25 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
+using System.Text;
+using System.Collections;
+using System.ComponentModel;
+
+
+
+
 
 namespace test00
 {
-
-
-
-
-
-
     public partial class Form1 : Form
     {
 
+
+        private static List<processes> processes = new List<processes>();
+        internal static List<processes> Processes { get => processes; set => processes = value; }
         public Form1()
         {
             InitializeComponent();
         }
 
         private DataTable process;
+
+        
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -30,6 +38,7 @@ namespace test00
             process.Columns.Add("arrivingTime", typeof(string));
             process.Columns.Add("burstTime", typeof(string));
             process.Columns.Add("Priority", typeof(string));
+            
             bool canConvertArr = float.TryParse(textBox2.Text, out arr);
             bool canConvertBru = float.TryParse(textBox3.Text, out bru);
             bool canConvertPri = float.TryParse(textBox4.Text, out pri);
@@ -56,11 +65,12 @@ namespace test00
             foreach (DataRow item in process.Rows)
             {
                 int num = dataGridView1.Rows.Add();
-                dataGridView1.Rows[num].Cells[0].Value = item["processName"].ToString();
+                dataGridView1.Rows[num].Cells[0].Value = item["processName"].ToString().ToUpper();
                 dataGridView1.Rows[num].Cells[1].Value = item["arrivingTime"].ToString();
                 dataGridView1.Rows[num].Cells[2].Value = item["burstTime"].ToString();
                 dataGridView1.Rows[num].Cells[3].Value = item["Priority"].ToString();
             }
+            dataGridView1.Sort(new NaturalSortComparer());
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -125,16 +135,31 @@ namespace test00
             int width = 40, height = 30;
             var graphics = e.Graphics;
             int count = dataGridView1.Rows.Count;
+            int sum = 0;
 
-
+            dataGridView1.Sort(new NaturalSortComparer());
             for (int i = 0; i < count; i++)
             {
-
+                
                 graphics.FillRectangle(new SolidBrush(Color.LightGray), new Rectangle((width * i) + 5, (panel1.Height / 3), width, height));
                 graphics.DrawRectangle(new Pen(Color.Gray), new Rectangle((width * i) + 5, (panel1.Height / 3), width, height));
-                graphics.DrawString($"{ dataGridView1[0, i].Value.ToString().ToUpper()}", new Font(FontFamily.GenericSansSerif, 13), new SolidBrush(Color.Black), new Point((width * i) + 15, (panel1.Height / 3) + 5));
-                graphics.DrawString($"{ dataGridView1[1, i].Value.ToString()}", new Font(FontFamily.GenericSerif, 8), new SolidBrush(Color.White), new Point((width * i) + 5, (panel1.Height / 3) + height));
+                if (comboBox1.Text == "FCFS")
+                {
+                   
+                    graphics.DrawString($"{ dataGridView1[0, i].Value.ToString().ToUpper()}", new Font(FontFamily.GenericSansSerif, 13), new SolidBrush(Color.Black), new Point((width * i) + 15, (panel1.Height / 3) + 5));
+                    int runTime = (int.Parse(dataGridView1[1, i].Value.ToString()) > sum) ? int.Parse(dataGridView1[1, i].Value.ToString()) : sum;
+                    sum += int.Parse(dataGridView1[2, i].Value.ToString()) + ((int.Parse(dataGridView1[1, i].Value.ToString()) < sum) ?0:(int.Parse(dataGridView1[1, i].Value.ToString())- sum));
+                    Console.WriteLine(sum);
+                    graphics.DrawString($"{runTime}", new Font(FontFamily.GenericSerif, 8), new SolidBrush(Color.White), new Point((width * i) +5, (panel1.Height / 3) + height));
+                    graphics.DrawString($"{sum}", new Font(FontFamily.GenericSerif, 8), new SolidBrush(Color.Black), new Point((width * i) + width -10, (panel1.Height / 3) + height));
 
+                }
+                else
+                {
+
+                    /*graphics.DrawString($"{ dataGridView1[0, i].Value.ToString().ToUpper()}", new Font(FontFamily.GenericSansSerif, 13), new SolidBrush(Color.Black), new Point((width * i) + 15, (panel1.Height / 3) + 5));
+                    graphics.DrawString($"{ dataGridView1[1, i].Value.ToString()}", new Font(FontFamily.GenericSerif, 8), new SolidBrush(Color.White), new Point((width * i) + 5, (panel1.Height / 3) + height));*/
+                }
             }
 
         }
@@ -144,6 +169,10 @@ namespace test00
             button1.Enabled = true;
             button2.Enabled = true;
             button3.Enabled = true;
+            textBox1.Enabled = true;
+            textBox2.Enabled = true;
+            textBox3.Enabled = true;
+            textBox4.Enabled = true;
 
             if (comboBox1.Text != "Preemptive Priority" && comboBox1.Text != "Non Preemptive Priority")
                 {
@@ -174,6 +203,13 @@ namespace test00
             button1.Enabled = false;
             button2.Enabled = false;
             button3.Enabled = false;
+            textBox1.Enabled = false;
+            textBox2.Enabled = false;
+            textBox3.Enabled = false;
+            textBox4.Enabled = false;
         }
+
+        
+        
     }
 }
