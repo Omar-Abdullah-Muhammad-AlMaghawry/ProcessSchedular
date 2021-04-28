@@ -17,10 +17,13 @@ namespace test00
         static  Brush blue = new SolidBrush(Color.Blue);
         static Pen bluePen = new Pen(blue, 4);
         static Brush black = new SolidBrush(Color.Black);
+        static Brush White = new SolidBrush(Color.White);
         static Pen blackPen = new Pen(black, 3);
+        static Pen whitePen = new Pen(White, 5);
         // Font font = new Font(Font.FontFamily, 4);
         static float startX = 0 , startY =0;
         static float height = 0 ;
+        static string nameOfProcess = "";
         float inc = 0;
         float width = 0;
         PaintEventArgs e;
@@ -58,11 +61,14 @@ namespace test00
             process.Columns.Add("arrivingTime", typeof(string));
             process.Columns.Add("burstTime", typeof(string));
             process.Columns.Add("Priority", typeof(string));
+
+            process.Columns.Add("waitingTime", typeof(string));
+            process.Columns.Add("turnaroundTime", typeof(string));
             bool canConvertArr = float.TryParse(textBox2.Text, out arr);
             bool canConvertBru = float.TryParse(textBox3.Text, out bur);
             bool canConvertPri = float.TryParse(textBox4.Text, out pri);
             if (canConvertArr == true && canConvertBru == true && canConvertPri == true)
-                process.Rows.Add(textBox1.Text, float.Parse (textBox2.Text), float.Parse(textBox3.Text), float.Parse(textBox4.Text));
+                process.Rows.Add(textBox1.Text, float.Parse (textBox2.Text), float.Parse(textBox3.Text), float.Parse(textBox4.Text),"0","0");
             else
                 MessageBox.Show("You have to enter decimal values for Arriving , Burst Time ,Priority","Error Entry",MessageBoxButtons.OK,MessageBoxIcon.Error);
 
@@ -127,10 +133,12 @@ namespace test00
             {
                     // TO DO ... show the process
                     width = float.Parse(arrData[noOfProcess - 1][2])*4;
+                    nameOfProcess = arrData[noOfProcess - 1][0];
                     dataGridView2_Paint( sender,  e);
                     dataGridView2.Update();
                     burstTimeSum += float.Parse((string)arrData[noOfProcess - 1][2]);
-                  int delIndex = int.Parse(arrData[noOfProcess - 1][4]);
+                    
+                    int delIndex = int.Parse(arrData[noOfProcess - 1][4]);
                     arrDataOr.RemoveAt(delIndex);
                     for(int c = delIndex; c < arrDataOr.Count; c++)
                     {
@@ -151,9 +159,11 @@ namespace test00
                 }
                     // TO DO .. Show the minRow 
                     width = float.Parse((string)minRow[2])*4;
+                    nameOfProcess = minRow[0];
                     dataGridView2_Paint(sender, e);
                     dataGridView2.Update();
                     burstTimeSum += float.Parse((string)minRow[2]);
+                    
                     int delIndex = int.Parse(minRow[4]);
                     arrDataOr.RemoveAt(delIndex);
                     for (int c = delIndex; c < arrDataOr.Count; c++)
@@ -191,32 +201,85 @@ namespace test00
                     //}
                 // }
             // }
-        } 
+        }
+        private void roundrobin(DataTable processes, int quantum)
+        {
+            //TODO implement return of average waiting and turnaround times
+            int time = 0;
+            int done = 0;
+            int processes_no = processes.Rows.Count;
+            bool madeProgress = false;
+
+            while (done != processes_no)
+            {
+                madeProgress = false;
+                for (int i = 0; i < processes_no; i++)
+                {
+                    DataRow process = processes.Rows[i];
+
+                    if (Convert.ToInt32(process["arrivingTime"]) <= time && Convert.ToInt32(process["burstTime"]) > 0)
+                    {
+                        if (Convert.ToInt32(process["burstTime"]) <= quantum)
+                        {
+                            //Console.WriteLine(process["processName"] + " " + Convert.ToString(time) + " " + Convert.ToString(time + Convert.ToInt32(process["burstTime"])));
+                            width = float.Parse(process["burstTime"].ToString()) * 4;
+                            nameOfProcess = process["processName"].ToString();
+                            dataGridView2_Paint(sender, e);
+                            dataGridView2.Update();
+                            time += Convert.ToInt32(process["burstTime"]);
+                            process["waitingTime"] = Convert.ToString(Convert.ToInt32(process["waitingTime"]) - Convert.ToInt32(process["burstTime"]));
+                            process["burstTime"] = Convert.ToString(Convert.ToInt32(process["waitingTime"]) * -1);
+                            process["turnaroundTime"] = Convert.ToString(time - Convert.ToInt32(process["arrivingTime"]));
+                            process["waitingTime"] = Convert.ToString(Convert.ToInt32(process["turnaroundTime"]) + Convert.ToInt32(process["waitingTime"]));
+                            done += 1;
+                            madeProgress = true;
+                        }
+                        else
+                        {
+                            //  Console.WriteLine(process["processName"] + " " + Convert.ToString(time) + " " + Convert.ToString(time + quantum));
+                            width = float.Parse(quantum.ToString()) * 4;
+                            nameOfProcess = process["processName"].ToString();
+                            dataGridView2_Paint(sender, e);
+                            dataGridView2.Update();
+                            time += quantum;
+                            process["burstTime"] = Convert.ToString(Convert.ToInt32(process["burstTime"]) - quantum);
+                            process["waitingTime"] = Convert.ToString(Convert.ToInt32(process["waitingTime"]) - quantum);
+                            madeProgress = true;
+                        }
+                    }
+                }
+                time = (madeProgress) ? time : time + quantum;
+            }
+        }
         private void button3_Click(object sender, EventArgs e)
         {
             startX = 15;
             inc = 0;
             width = 0;
-          //  dataGridView2.Refresh();
-          if(comboBox1.Text== "Non Preemptive Priority")
-            pSort();
+            //  dataGridView2.Refresh();
+            if (comboBox1.Text == "Non Preemptive Priority")
+                pSort();
+            else if (comboBox1.Text == "Round Robin")
+                roundrobin(process, 10);
            // dataGridView2.Update();
 
 
         }
 
-        private void drawRect(float w)
+        private void drawRect(float w,string name)
         {
-            Font font = new Font(Font.FontFamily, 6);
+            Font fontb = new Font(Font.FontFamily, 6);
+            Font fontw = new Font(Font.FontFamily, 8);
             pObject.DrawRectangle(blackPen, startX + inc, startY, w, height);
             pObject.FillRectangle(blue, startX + inc, startY, w, height);
            // if (inc != 0)
-                pObject.DrawString((inc/4).ToString(), font, black, startX + inc-3 , startY + (float)26);
+            pObject.DrawString((inc/4).ToString(), fontb, black, startX + inc-3 , startY + (float)26);
+            pObject.DrawString(name, fontw, White, (startX + inc-4) + (width/2) , startY + height/2);
             inc += w;
             if (inc != 0)
             {
                
-                pObject.DrawString((inc / 4).ToString(),font, black, startX + inc-3, startY + (float)26);
+                pObject.DrawString((inc / 4).ToString(),fontb, black, startX + inc-3, startY + (float)26);
 
             }
         }
@@ -228,7 +291,7 @@ namespace test00
             float w = 0;
             pObject = dataGridView2.CreateGraphics();
 
-            drawRect(width);
+            drawRect(width,nameOfProcess);
               
            
             w = width;
